@@ -80,6 +80,7 @@ description: The Master Router (The Brain). Use this skill FIRST to find the cor
 | `game-development` | **General** | Game loop, physics, math for games. |
 | `modding-hytale` | **Hytale** | Hytale specific modding API, Kwik, Java. |
 | `modding-fivem-qbcore` | **GTA V** | FiveM server scripting, Lua, QBCore framework. |
+| `discord-bot-mastery` | **Discord** | Bots, Embedded Apps (Activities), Interactions API. |
 
 ### 🤖 AI, Agents & Automation
 
