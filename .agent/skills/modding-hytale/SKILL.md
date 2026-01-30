@@ -21,6 +21,7 @@ description: Guides the creation of Hytale mods using Java (Server), NoesisGUI (
 2. **Environment Check & Setup**:
     - **Java 25** (OpenJDK/Adoptium) + **Maven 3.9.12+**.
     - Install `HytaleServer.jar` to local Maven cache.
+    - **NEW**: Configure `gradle.properties` if using custom paths.
 
 3. **Execute Logic**:
     - Follow the specific patterns in the linked resource files.
@@ -40,9 +41,39 @@ description: Guides the creation of Hytale mods using Java (Server), NoesisGUI (
 mvn install:install-file -Dfile="PATH_TO_JAR/HytaleServer.jar" -DgroupId="com.hypixel.hytale" -DartifactId="HytaleServer-parent" -Dversion="1.0-SNAPSHOT" -Dpackaging="jar"
 ```
 
-*Note: Wrap arguments in quotes if PowerShell throws parsing errors.*
+**Custom Game Location (`gradle.properties`):**
+If your Hytale installation is non-standard, create `%USERPROFILE%/.gradle/gradle.properties`:
 
-### 2. Quick References
+```properties
+hytale.install_dir=path/to/Hytale
+# Optional: Speed up decompilation
+hytale.decompile_partial=true
+```
+
+### 2. Event System Architecture
+
+Hytale distinguishes between Synchronous, Asynchronous, and ECS events.
+
+| Event Type | Interface | Usage | Examples |
+| :--- | :--- | :--- | :--- |
+| **Sync** | `IEvent` | Main thread. Safe to modify world/entities. | `PlayerReadyEvent`, `EntityRemoveEvent`, `AddWorldEvent` |
+| **Async** | `IAsyncEvent` | Separate thread. **Read-only** access to world. | `PlayerChatEvent`, `AssetEditorFetchAutoCompleteDataEvent` |
+| **ECS** | `EcsEvent` | Entity Component System interactions. | `BreakBlockEvent`, `PlaceBlockEvent`, `DamageBlockEvent` |
+
+**Critical**: Never modify world state inside an `IAsyncEvent`.
+
+### 3. Prefab Workflow (Building Structures)
+
+Prefabs are structures created in-game and saved as assets.
+
+1. **Create Editing World**: `/editprefab new <world_name>`
+2. **Build**: Construct your structure.
+3. **Select**: Use the Selection Brush to define bounds.
+4. **Save**: `/prefab save` (Saves to file system).
+5. **Exit**: `/editprefab exit`.
+6. **Load/Test**: `/prefab load` to spawn it in a normal world.
+
+### 4. Quick References
 
 #### Server & ECS
 
@@ -56,6 +87,7 @@ mvn install:install-file -Dfile="PATH_TO_JAR/HytaleServer.jar" -DgroupId="com.hy
 - **Spawning Entities**: Do NOT use `new Entity()`. Use `PrefabSpawnerModule` or `EntityModule`.
 - **Async Events**: Do NOT modify the world in `IAsyncEvent`.
 - **UI Latency**: UI interactions make a round-trip to the server. Design accordingly.
+- **Gradle Refresh**: Always refresh Gradle after changing `gradle.properties` or `build.gradle`.
 
 ## Resources
 
@@ -64,3 +96,4 @@ mvn install:install-file -Dfile="PATH_TO_JAR/HytaleServer.jar" -DgroupId="com.hy
 - [Assets & Client Guide](resources/assets_and_client.md)
 - [HyUI Documentation (HTML UI)](resources/hyui_documentation.md)
 - [Official Hytale Modding Docs](https://hytalemodding.dev/en/docs)
+- [Example Plugin Repo](https://github.com/Kaupenjoe/Hytale-Example-Plugin)
