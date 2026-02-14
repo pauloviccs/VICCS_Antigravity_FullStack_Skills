@@ -70,6 +70,88 @@ server_scripts { 'server/main.lua' }
 - **Show**: `SetNuiFocus(true, true)`
 - **Hide**: `SetNuiFocus(false, false)`
 
+### 5. Modern NUI (React/Vue)
+
+Modern NUI development uses web frameworks like React or Vue 3 for complex, reactive interfaces.
+
+#### Architecture
+
+- **Structure**: `[resource-name]/web/` (contains package.json, source code).
+- **Build Process**: Use Vite or Webpack to bundle the app into a single `index.html` + `assets/` folder.
+- **fxmanifest**: Point `ui_page` to the *built* index file (e.g., `web/dist/index.html`).
+
+#### Communication Patterns (Two-Way)
+
+**1. Lua to JS (Receiving Data):**
+In React/Vue, listen for the `message` event.
+
+*Lua (Sending):*
+
+```lua
+SendNUIMessage({
+    action = 'OPEN_INVENTORY',
+    data = { items = {} }
+})
+```
+
+*JS/React (Receiving - Hook Example):*
+
+```javascript
+import { useEffect, useState } from 'react';
+
+export const useNuiEvent = (action, handler) => {
+  useEffect(() => {
+    const eventListener = (event) => {
+      const { action: eventAction, data } = event.data;
+      if (eventAction === action) handler(data);
+    };
+    window.addEventListener('message', eventListener);
+    return () => window.removeEventListener('message', eventListener);
+  }, [action, handler]);
+};
+
+// Usage
+useNuiEvent('OPEN_INVENTORY', (data) => console.log(data.items));
+```
+
+**2. JS to Lua (Sending Data / Callbacks):**
+Use `fetch()` to post data to the resource URL.
+
+*JS/React (Sending):*
+
+```javascript
+// Function wrapper for NUI fetch
+const fetchNui = async (eventName, data = {}) => {
+  const resourceName = window.GetParentResourceName ? window.GetParentResourceName() : 'nui-frame-app';
+  const resp = await fetch(`https://${resourceName}/${eventName}`, {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+    body: JSON.stringify(data),
+  });
+  return await resp.json();
+};
+
+// Usage
+fetchNui('closeUI', { reason: 'user_closed' }).then(result => console.log(result));
+```
+
+*Lua (Receiving Callback):*
+
+```lua
+RegisterNUICallback('closeUI', function(data, cb)
+    SetNuiFocus(false, false)
+    print("UI Closed: " .. data.reason)
+    cb({ status = 'ok' }) -- Respond to the fetch promise
+end)
+```
+
+#### Best Practices
+
+- **Development Mode**: Run your React/Vue dev server `npm run dev` in browser for UI testing. Mock the NUI events.
+- **Production Build**: Always run `npm run build` before restarting the script in FiveM.
+- **Focus Handling**: Don't leave `SetNuiFocus(true, true)` without a way to exit (ESC key handler in JS).
+- **State Management**: Use Zustand (React) or Pinia (Vue) for "global" data like player inv, distinct from local UI state.
+
 ## Resources
 
 - [FiveM Native Reference](https://docs.fivem.net/natives/)
