@@ -20,9 +20,9 @@ A context operating system designed for AI Agents (Gemini, Claude, GPT) to trans
 ```text
 /
 ├── .agent/
-│   ├── gdd/          # Game Design Documents (9 items: core/, knowledge/, active_context, roadmap, etc.)
-│   ├── skills/       # Technical Knowledge Libraries - 645 skill directories
-│   ├── workflows/    # Standard Operating Procedures (1 workflow: ui-ux-pro-max.md)
+│   ├── gdd/          # Game Design Documents (9 visible items)
+│   ├── skills/       # Technical Knowledge Libraries - 2622 skill directories
+│   ├── workflows/    # Standard Operating Procedures (1 workflow)
 │   └── overview/     # Project Status & Overview
 ├── README.md         # Project Entry Point
 └── rules/            # Project Rules (3 rule files)
@@ -30,8 +30,8 @@ A context operating system designed for AI Agents (Gemini, Claude, GPT) to trans
 
 ## Current Features
 
-- **Skills Library**: A vast collection of **645 technical skills** for AI agents, covering:
-  - Frontend: React, Angular, Vue, Next.js, Tailwind, SwiftUI, Flutter
+- **Skills Library**: A vast collection of **2622 technical skills** for AI agents, covering:
+  - Frontend: React, Angular, Vue, Next.js, Tailwind, SwiftUI, Flutter, Progressive Web Apps (PWA)
   - Backend: Node.js, Python, Go, Rust, Java, .NET, FastAPI, Django
   - DevOps: Docker, Kubernetes, Terraform, CI/CD, AWS, Azure, GCP
   - Security: Penetration Testing, Threat Modeling, OWASP, Red Team Tactics
@@ -58,4 +58,4 @@ A context operating system designed for AI Agents (Gemini, Claude, GPT) to trans
 
 ## Last Updated
 
-2026-02-09T11:12:37-03:00
+2026-02-26T10:18:06-03:00
